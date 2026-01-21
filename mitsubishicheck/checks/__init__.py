@@ -9,6 +9,7 @@ from .cve import CVECheck
 from .protocol import ProtocolCheck
 from .control import ControlCheck
 from .information import InformationDisclosureCheck
+from .cclink import CCLinkSecurityCheck, CCLinkDiscoveryCheck, CCLinkProtocolCheck
 
 __all__ = [
     "SecurityCheck",
@@ -22,6 +23,10 @@ __all__ = [
     "ProtocolCheck",
     "ControlCheck",
     "InformationDisclosureCheck",
+    # CC-Link checks
+    "CCLinkSecurityCheck",
+    "CCLinkDiscoveryCheck",
+    "CCLinkProtocolCheck",
 ]
 
 # Registry of all available security checks
@@ -34,4 +39,8 @@ AVAILABLE_CHECKS = {
     "protocol": ProtocolCheck,
     "control": ControlCheck,
     "information": InformationDisclosureCheck,
+    # CC-Link IE Field checks
+    "cclink": CCLinkSecurityCheck,
+    "cclink_discovery": CCLinkDiscoveryCheck,
+    "cclink_protocol": CCLinkProtocolCheck,
 }

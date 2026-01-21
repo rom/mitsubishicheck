@@ -43,6 +43,12 @@ class DeviceInfo:
     supports_ascii: bool = False
     supports_binary: bool = True
 
+    # CC-Link IE Field capabilities
+    supports_cclink: bool = False
+    cclink_port: int = 45237
+    cclink_station_no: int = 0
+    cclink_network_no: int = 0
+
     # Security status
     password_protected: bool = False
     password_locked: bool = False
@@ -90,6 +96,10 @@ class DeviceInfo:
             "supports_3e": self.supports_3e,
             "supports_4e": self.supports_4e,
             "supports_1e": self.supports_1e,
+            "supports_cclink": self.supports_cclink,
+            "cclink_port": self.cclink_port,
+            "cclink_station_no": self.cclink_station_no,
+            "cclink_network_no": self.cclink_network_no,
             "password_protected": self.password_protected,
             "password_locked": self.password_locked,
             "is_running": self.is_running,
@@ -146,9 +156,19 @@ DEFAULT_PORTS = {
     "fx_protocol": 5001,
     "slmp": 5010,
     "cc_link_ie_field": 45237,
+    "cc_link_ie_control": 45238,
+    "cc_link_ie_tsn": 45239,
     "melsec_net": 5002,
     "gx_works": 5556,
     "melsoft": 5561,
+}
+
+# CC-Link IE Field specific ports
+CCLINK_PORTS = {
+    "cclink_ie_field": 45237,
+    "cclink_ie_control": 45238,
+    "cclink_ie_tsn": 45239,
+    "cclink_slmp": 5010,
 }
 
 # Known vulnerable firmware versions (for educational/testing purposes)
@@ -160,6 +180,23 @@ KNOWN_VULNERABLE_VERSIONS = {
     "R08SFCPU": {
         "versions": ["<= 05"],
         "cves": ["CVE-2022-25164"],
+    },
+    # CC-Link IE Field modules
+    "RJ71GF11-T2": {
+        "versions": ["<= 07"],
+        "cves": ["CVE-2020-5668", "CVE-2020-5669", "CVE-2022-25161"],
+    },
+    "QJ71GF11-T2": {
+        "versions": ["<= 03"],
+        "cves": ["CVE-2022-25161"],
+    },
+    "RJ71EN71": {
+        "versions": ["<= 08"],
+        "cves": ["CVE-2020-5668"],
+    },
+    "RJ71GN11-T2": {
+        "versions": ["<= 05"],
+        "cves": ["CVE-2021-20594"],
     },
 }
 
