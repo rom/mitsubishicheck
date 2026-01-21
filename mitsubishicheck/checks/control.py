@@ -69,7 +69,7 @@ class ControlCheck(SecurityCheck):
             import struct
 
             # Build stop command with invalid mode to trigger error without execution
-            probe = struct.pack("<HBBHBHHHH",
+            probe = struct.pack("<HBBHBHHHHH",
                 SubheaderType.REQUEST_3E,
                 0x00, 0xFF, 0x03FF, 0x00,
                 0x04, 0x10, 0x00,
