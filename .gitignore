@@ -141,7 +141,8 @@ cython_debug/
 Thumbs.db
 
 # Project specific
-reports/
+# Output reports (not the reports module)
+output_reports/
 *.html
 *.json
 !pyproject.toml
