@@ -1,0 +1,227 @@
+.\" Manpage for mitsubishicheck
+.\" Contact: security@example.com
+.TH MITSUBISHICHECK 1 "January 2024" "1.0.0" "User Commands"
+.SH NAME
+mitsubishicheck \- Security audit tool for Mitsubishi PLCs using MELSEC protocol
+.SH SYNOPSIS
+.B mitsubishicheck
+[\fB\-t\fR \fITARGET\fR]
+[\fB\-p\fR \fIPORT\fR]
+[\fB\-\-network\fR \fINETWORK\fR]
+[\fB\-\-checks\fR \fICHECKS\fR]
+[\fB\-\-all\-checks\fR]
+[\fB\-o\fR \fIOUTPUT\fR]
+[\fB\-\-format\fR \fIFORMAT\fR]
+[\fIOPTIONS\fR]
+.SH DESCRIPTION
+.B mitsubishicheck
+is a comprehensive security assessment tool for Mitsubishi Programmable
+Logic Controllers (PLCs) using the MELSEC Communication Protocol.
+.PP
+The tool performs various security checks including authentication testing,
+memory access verification, CVE detection, and protocol security analysis.
+.PP
+.B WARNING:
+This tool is intended for authorized security testing only. Unauthorized
+access to computer systems is illegal. Industrial Control Systems control
+physical processes - improper testing can cause equipment damage or safety hazards.
+.SH OPTIONS
+.SS "Target Specification"
+.TP
+.BR \-t ", " \-\-target " " \fIIP\fR
+Target PLC IP address to scan.
+.TP
+.BR \-p ", " \-\-port " " \fIPORT\fR
+Target port number. Default: 5007.
+.TP
+.BR \-\-network " " \fICIDR\fR
+Network range to scan in CIDR notation (e.g., 192.168.1.0/24).
+.TP
+.BR \-\-ports " " \fIPORTS\fR
+Port specification for network scans. Supports single ports (5007),
+ranges (5000-5010), and lists (5007,5006,5010).
+.SS "Check Selection"
+.TP
+.BR \-\-checks " " \fICHECKS\fR
+Comma-separated list of security checks to run.
+Available checks: discovery, authentication, memory, firmware, cve,
+protocol, control, information.
+.TP
+.BR \-\-all\-checks
+Run all available security checks.
+.TP
+.BR \-\-exclude\-checks " " \fICHECKS\fR
+Comma-separated list of checks to exclude.
+.TP
+.BR \-\-list\-checks
+List all available security checks and exit.
+.SS "Check Options"
+.TP
+.BR \-\-test\-write
+Enable memory write testing. USE WITH EXTREME CAUTION - this writes
+to PLC memory and may affect system operation.
+.TP
+.BR \-\-fuzz
+Enable protocol fuzzing. MAY CAUSE DEVICE INSTABILITY - only use
+in isolated test environments.
+.TP
+.BR \-\-default\-passwords
+Test for default and common passwords.
+.TP
+.BR \-\-max\-password\-attempts " " \fINUM\fR
+Maximum password attempts for brute force testing. Default: 10.
+.SS "Output Options"
+.TP
+.BR \-o ", " \-\-output " " \fIFILE\fR
+Output report file path. Format is auto-detected from extension.
+.TP
+.BR \-\-format " " \fIFORMAT\fR
+Output format. Options: text, json, html, csv, markdown. Default: text.
+.TP
+.BR \-v ", " \-\-verbose
+Increase verbosity. Can be specified multiple times (-v, -vv, -vvv).
+.TP
+.BR \-q ", " \-\-quiet
+Quiet mode - only show findings, suppress informational messages.
+.TP
+.BR \-\-no\-color
+Disable colored output.
+.SS "Connection Options"
+.TP
+.BR \-\-timeout " " \fISECONDS\fR
+Connection timeout in seconds. Default: 5.0.
+.TP
+.BR \-\-udp
+Use UDP instead of TCP for communication.
+.TP
+.BR \-\-frame " " \fITYPE\fR
+MELSEC frame type: 3E (QnA compatible) or 4E (iQ-R). Default: 3E.
+.SS "Other Options"
+.TP
+.BR \-\-version
+Show program version and exit.
+.TP
+.BR \-\-disclaimer
+Show full legal disclaimer and exit.
+.TP
+.BR \-h ", " \-\-help
+Show help message and exit.
+.SH SECURITY CHECKS
+.TP
+.B discovery
+Check for exposed MELSEC services and ports. Identifies open ports,
+protocol fingerprints, and UDP service exposure.
+.TP
+.B authentication
+Check for authentication weaknesses including missing password protection,
+default credentials, and lockout mechanism testing.
+.TP
+.B memory
+Check for unauthorized memory access. Tests read/write access to various
+device memory areas including data registers, relays, and special registers.
+.TP
+.B firmware
+Check for firmware vulnerabilities including known vulnerable versions,
+end-of-life models, and version disclosure.
+.TP
+.B cve
+Check against database of known CVE vulnerabilities affecting Mitsubishi PLCs.
+.TP
+.B protocol
+Check for MELSEC protocol security weaknesses including cleartext
+communication, replay attack susceptibility, and malformed packet handling.
+.TP
+.B control
+Check for unauthorized access to dangerous PLC control functions like
+RUN/STOP commands and program memory.
+.TP
+.B information
+Check for sensitive information disclosure through device identification,
+error messages, and memory content analysis.
+.SH EXIT STATUS
+.TP
+.B 0
+Scan completed successfully, no critical/high findings.
+.TP
+.B 1
+Error during scan (connection failure, invalid arguments, etc.).
+.TP
+.B 2
+Scan completed with critical or high severity findings.
+.SH EXAMPLES
+.TP
+Scan a single PLC with default checks:
+.B mitsubishicheck -t 192.168.1.100
+.TP
+Run all security checks:
+.B mitsubishicheck -t 192.168.1.100 --all-checks
+.TP
+Scan a network range:
+.B mitsubishicheck --network 192.168.1.0/24
+.TP
+Generate HTML report:
+.B mitsubishicheck -t 192.168.1.100 -o report.html --all-checks
+.TP
+Run specific checks only:
+.B mitsubishicheck -t 192.168.1.100 --checks authentication,cve
+.TP
+Test for default passwords:
+.B mitsubishicheck -t 192.168.1.100 --default-passwords
+.TP
+Use UDP protocol:
+.B mitsubishicheck -t 192.168.1.100 --udp --port 5006
+.TP
+Generate JSON report for SIEM:
+.B mitsubishicheck -t 192.168.1.100 --format json -o findings.json
+.SH FILES
+.TP
+.I ~/.config/mitsubishicheck/config.yaml
+User configuration file (optional).
+.TP
+.I /etc/mitsubishicheck/config.yaml
+System-wide configuration file (optional).
+.SH SUPPORTED DEVICES
+.PP
+The tool supports the following Mitsubishi PLC series:
+.IP \(bu 4
+MELSEC iQ-R Series
+.IP \(bu 4
+MELSEC iQ-F Series
+.IP \(bu 4
+MELSEC-Q Series
+.IP \(bu 4
+MELSEC-L Series
+.IP \(bu 4
+MELSEC-QnA Series
+.IP \(bu 4
+FX Series (FX3, FX5)
+.IP \(bu 4
+MELSEC-A Series (legacy)
+.SH SECURITY CONSIDERATIONS
+.PP
+This tool is designed for authorized security testing and assessment.
+Consider the following:
+.IP \(bu 4
+Always obtain written authorization before testing
+.IP \(bu 4
+PLCs control physical processes - improper testing can be dangerous
+.IP \(bu 4
+Network segmentation is critical for ICS security
+.IP \(bu 4
+Test in isolated environments when possible
+.IP \(bu 4
+Some checks may affect PLC operation
+.SH REPORTING BUGS
+Report bugs at: https://github.com/example/mitsubishicheck/issues
+.SH AUTHORS
+Security Research Team
+.SH COPYRIGHT
+MIT License. See LICENSE file for details.
+.SH SEE ALSO
+.BR nmap (1),
+.BR metasploit (1),
+.BR wireshark (1)
+.PP
+Full documentation: https://github.com/example/mitsubishicheck
+.PP
+MELSEC Protocol Reference: https://www.mitsubishielectric.com/fa/
