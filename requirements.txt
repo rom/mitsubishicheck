@@ -1,0 +1,8 @@
+# Mitsubishi PLC Security Audit Tool - Requirements
+#
+# Core dependencies: None (uses Python standard library only)
+#
+# Development dependencies (install with: pip install -r requirements-dev.txt)
+
+# No runtime dependencies required - tool uses only Python standard library
+# This ensures maximum compatibility and minimal attack surface
