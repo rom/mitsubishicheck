@@ -146,7 +146,10 @@ class InformationDisclosureCheck(SecurityCheck):
         for test_name, device, addr, count in test_cases:
             try:
                 response = self.client.batch_read(device, addr & 0xFFFFFF, count)
-                if not response.success and response.error_message:
+                # Only consider actual PLC error responses, not client-side parsing failures
+                # end_code == -1 indicates a parsing error (e.g., response too short),
+                # which is not information disclosure from the PLC
+                if not response.success and response.error_message and response.end_code >= 0:
                     error_details.append({
                         "test": test_name,
                         "error_code": hex(response.end_code),
